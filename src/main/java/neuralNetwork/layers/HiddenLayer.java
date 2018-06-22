@@ -3,6 +3,9 @@ package neuralNetwork.layers;
 import cern.colt.matrix.DoubleMatrix2D;
 import cern.colt.matrix.impl.DenseDoubleMatrix2D;
 import neuralNetwork.nodes.NeuronNode;
+import neuralNetwork.nodes.Node;
+
+import java.util.ArrayList;
 
 public class HiddenLayer extends Layer
 {
@@ -24,6 +27,11 @@ public class HiddenLayer extends Layer
     private double getBias(int neuronIndex)
     {
         return ((NeuronNode) nodes.get(neuronIndex)).getBias();
+    }
+
+    public ArrayList<Node> getNeurons()
+    {
+        return nodes;
     }
 
     public DoubleMatrix2D getBiases()

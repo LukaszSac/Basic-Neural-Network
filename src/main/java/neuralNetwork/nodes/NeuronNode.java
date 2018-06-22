@@ -8,6 +8,11 @@ public class NeuronNode implements Node
     private double bias;
     private DoubleMatrix2D weightVector;
     private int inputCount;
+    private double lastActivation;
+    private double lastSum;
+
+    private int activationChanges = 0;
+    private double activationChange = 0;
 
     private void createWeightVector(int inputCount)
     {
@@ -58,5 +63,41 @@ public class NeuronNode implements Node
 
     public int getInputCount() {
         return inputCount;
+    }
+
+    public void resetLearningValues() {
+        lastActivation = 0;
+        lastSum = 0;
+        activationChanges = 0;
+        activationChange = 0;
+    }
+
+    public void setLastActivation(double value) {
+        lastActivation = value;
+    }
+
+    public double getLastActivation() {
+        return lastActivation;
+    }
+
+    public void setLastSum(double value) {
+        lastSum = value;
+    }
+
+    public double getLastSum() {
+        return lastSum;
+    }
+
+    public void addActivationChange(double value) {
+        activationChange +=value;
+        activationChanges++;
+    }
+
+    public void calculateActiovationChange() {
+        activationChange/=activationChanges;
+    }
+
+    public double getActivationChange() {
+        return activationChange;
     }
 }
