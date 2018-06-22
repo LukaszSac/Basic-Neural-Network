@@ -1,6 +1,7 @@
 package neuralNetwork.layers;
 
 import cern.colt.matrix.DoubleMatrix2D;
+import cern.colt.matrix.impl.DenseDoubleMatrix2D;
 import neuralNetwork.nodes.NeuronNode;
 
 public class HiddenLayer extends Layer
@@ -20,10 +21,22 @@ public class HiddenLayer extends Layer
         return ((NeuronNode)nodes.get(0)).getInputCount();
     }
 
-    public double getBias(int neuronIndex)
+    private double getBias(int neuronIndex)
     {
         return ((NeuronNode) nodes.get(neuronIndex)).getBias();
     }
+
+    public DoubleMatrix2D getBiases()
+    {
+        DoubleMatrix2D output = new DenseDoubleMatrix2D(1,nodesCount());
+        for(int i=0;i<nodesCount();i++)
+        {
+            output.setQuick(0,i,getBias(i));
+        }
+        return output;
+    }
+
+
     public DoubleMatrix2D getWeights(int neuronIndex)
     {
         return ((NeuronNode) nodes.get(neuronIndex)).getWeightVector();
