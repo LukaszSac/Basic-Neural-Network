@@ -18,7 +18,8 @@ public class NeuralNetwork
     private List<HiddenLayer> layers = new ArrayList<HiddenLayer>();
     private InputLayer inputLayer;
     private OutputLayer outputLayer;
-
+    private ArrayList<DoubleMatrix2D> learningInputs;
+    private ArrayList<DoubleMatrix2D> learningOutputs;
 
     private double sigmoid(double x)
     {
@@ -65,8 +66,42 @@ public class NeuralNetwork
             outputLayer = new OutputLayer(prev,outputNodeCount);
             layers.add(outputLayer);
             in.close();
+            in = new Scanner(new FileReader("src/main/resources/learninginput.txt"));
+            learningInputs = new ArrayList<DoubleMatrix2D>();
+            while(in.hasNext())
+            {
+                String[] inputs = in.nextLine().split("\\s");
+                DoubleMatrix2D oneInput = new DenseDoubleMatrix2D(1,inputs.length);
+                for(String variable : inputs)
+                    for (int i = 0; i < inputs.length; i++)
+                        oneInput.setQuick(0, i, Integer.parseInt(variable));
+                learningInputs.add(oneInput);
+            }
+            in.close();
+            in = new Scanner(new FileReader("src/main/resources/learningoutput.txt"));
+            learningOutputs = new ArrayList<DoubleMatrix2D>();
+            while(in.hasNext())
+            {
+                String[] inputs = in.nextLine().split("\\s");
+                DoubleMatrix2D oneInput = new DenseDoubleMatrix2D(1,inputs.length);
+                for(String variable : inputs)
+                    for (int i = 0; i < inputs.length; i++)
+                        oneInput.setQuick(0, i, Integer.parseInt(variable));
+                learningOutputs.add(oneInput);
+            }
+            in.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        }
+        int index = 0;
+        for(DoubleMatrix2D learningMaterial : learningInputs)
+        {
+            System.out.println("For input:");
+            System.out.println(learningMaterial);
+            System.out.println("Output:");
+            System.out.println(think(learningMaterial));
+            System.out.println("Wanted:");
+            System.out.println(learningOutputs.get(index++));
         }
     }
 
@@ -92,11 +127,7 @@ public class NeuralNetwork
     {
         DoubleMatrix2D output = input;
         for(int i=0;i<layers.size();i++)
-        {
             output = oneIteration(output,i);
-            System.out.println(output);
-        }
-
         return output;
     }
 
