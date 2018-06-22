@@ -1,5 +1,7 @@
 package neuralNetwork.nodes;
 
+import cern.colt.matrix.DoubleMatrix2D;
+
 public class InputNode implements Node
 {
     private double value;
@@ -52,6 +54,22 @@ public class InputNode implements Node
     }
 
     public void resetLearningValues() {
+
+    }
+
+    public void addWeightChanges(DoubleMatrix2D changes) {
+
+    }
+
+    public void applyWeightChanges() {
+
+    }
+
+    public void addBiasChange(double value) {
+
+    }
+
+    public void applyBiasChanges() {
 
     }
 

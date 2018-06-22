@@ -1,5 +1,7 @@
 package neuralNetwork.nodes;
 
+import cern.colt.matrix.DoubleMatrix2D;
+
 public interface Node {
     void setLastActivation(double value);
     double getLastActivation();
@@ -10,4 +12,8 @@ public interface Node {
     double getActivationChange();
     int getInputCount();
     void resetLearningValues();
+    void addWeightChanges(DoubleMatrix2D changes);
+    void applyWeightChanges();
+    void addBiasChange(double value);
+    void applyBiasChanges();
 }

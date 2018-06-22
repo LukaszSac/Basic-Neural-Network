@@ -39,22 +39,19 @@ public class NeuralNetwork
         {
             int inputCount = node.getInputCount();
             DoubleMatrix2D weightChanges = new DenseDoubleMatrix2D(1,inputCount);
-            DoubleMatrix2D biasChanges = new DenseDoubleMatrix2D(1,inputCount);
             for(int i=0;i<inputCount;i++)
             {
-                Node correspondingNode = prevLayer.getNode(i);
-                double weightChange = correspondingNode.getLastActivation();
+                double weightChange = node.getLastActivation();
                 double activationChange = ((NeuronNode)node).getWeightVector().get(0,i);
-                double biasChange = derSigmoid(correspondingNode.getLastSum());
+                double biasChange = derSigmoid(node.getLastSum());
                 biasChange*=2*(node.getLastActivation() - wanted.get(0,index));
                 weightChange*=biasChange;
                 weightChanges.setQuick(0,i,weightChange);
-                biasChanges.set(0,i,biasChange);
-                correspondingNode.addActivationChange(activationChange*biasChange);
+                prevLayer.getNode(i).addActivationChange(activationChange*biasChange);
+                node.addWeightChanges(weightChanges);
+                node.addBiasChange(biasChange);
             }
             index++;
-            System.out.println("Last layer weight changes: " + weightChanges);
-            System.out.println("Last layer bias changes: " + biasChanges);
         }
         for(Node node : prevLayer.getNeurons())
         {
@@ -89,9 +86,9 @@ public class NeuralNetwork
             while (in.hasNext()) {
                 String[] inputs = in.nextLine().split("\\s");
                 DoubleMatrix2D oneInput = new DenseDoubleMatrix2D(1, inputs.length);
+                int i = 0;
                 for (String variable : inputs)
-                    for (int i = 0; i < inputs.length; i++)
-                        oneInput.setQuick(0, i, Integer.parseInt(variable));
+                        oneInput.setQuick(0, i++, Integer.parseInt(variable));
                 data.add(oneInput);
             }
             in.close();
@@ -126,7 +123,7 @@ public class NeuralNetwork
             learningInputs = new ArrayList<DoubleMatrix2D>();
             loadDataFromFile("src/main/resources/learninginput.txt", learningInputs);
             learningOutputs = new ArrayList<DoubleMatrix2D>();
-            loadDataFromFile("\"src/main/resources/learningoutput.txt", learningOutputs);
+            loadDataFromFile("src/main/resources/learningoutput.txt", learningOutputs);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -136,19 +133,34 @@ public class NeuralNetwork
     {
         initLearningData(structurePath);
         int index = 0;
-        ArrayList <DoubleMatrix2D> gotgot = new ArrayList<DoubleMatrix2D>();
         for(DoubleMatrix2D learningMaterial : learningInputs)
         {
             System.out.println("For input:");
             System.out.println(learningMaterial);
             System.out.println("Output:");
             DoubleMatrix2D output = think(learningMaterial);
-            gotgot.add(output);
             System.out.println(output);
-            System.out.println("Wanted:");
-            System.out.println(learningOutputs.get(index++));
-            System.out.println("Weight changes: ");
+            learningOutputs.get(index++);
             backPropagation(learningMaterial);
+            System.out.println("\n\n\n");
+        }
+        for(Node node: outputLayer.getNeurons())
+        {
+            node.applyWeightChanges();
+            node.applyBiasChanges();
+            node.resetLearningValues();
+        }
+        index = 0;
+        for(DoubleMatrix2D learningMaterial : learningInputs)
+        {
+            System.out.println("For input:");
+            System.out.println(learningMaterial);
+            System.out.println("Output:");
+            DoubleMatrix2D output = think(learningMaterial);
+            System.out.println(output);
+            learningOutputs.get(index++);
+            backPropagation(learningMaterial);
+            System.out.println("\n\n\n");
         }
     }
 

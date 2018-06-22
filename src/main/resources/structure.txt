@@ -1,5 +1,4 @@
 Input layer nodes =2
-Output layer nodes =2
-Hidden layer count =2
+Output layer nodes =1
+Hidden layer count =1
 2
-3

@@ -24,7 +24,7 @@ public class HiddenLayer extends Layer
         return ((NeuronNode)nodes.get(0)).getInputCount();
     }
 
-    private double getBias(int neuronIndex)
+    protected double getBias(int neuronIndex)
     {
         return ((NeuronNode) nodes.get(neuronIndex)).getBias();
     }
