@@ -1,0 +1,6 @@
+Input layer nodes = 3
+Output layer nodes = 2
+Hidden layer count = 2
+//Number of neurons in each layer
+3
+4
